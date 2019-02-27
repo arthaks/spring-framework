@@ -1,6 +1,7 @@
 buildscript {
 	repositories {
 		maven { url "https://repo.spring.io/plugins-release" }
+		maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
 	}
 	dependencies {
 		classpath("io.spring.gradle:propdeps-plugin:0.0.9.RELEASE")
@@ -15,6 +16,15 @@ plugins {
 	id "org.jetbrains.dokka" version "0.9.17"
 	id "org.asciidoctor.convert" version "1.5.7"
 }
+
+
+allprojects {
+	repositories {
+		maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+		mavenCentral()
+	}
+}
+
 
 ext {
 	linkHomepage = "https://projects.spring.io/spring-framework"
