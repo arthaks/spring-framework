@@ -83,6 +83,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	private final Set<String> registeredSingletons = new LinkedHashSet<>(256);
 
 	/** Names of beans that are currently in creation. */
+	// 正在创建中的单例bean的name 集合
 	private final Set<String> singletonsCurrentlyInCreation =
 			Collections.newSetFromMap(new ConcurrentHashMap<>(16));
 
@@ -174,9 +175,12 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 */
 	@Nullable
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
+		// 单例缓存中获取给定的beanName 的实例化对象
 		Object singletonObject = this.singletonObjects.get(beanName);
+		// 如果是创建中,
 		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
 			synchronized (this.singletonObjects) {
+				// TODO: 19-8-28  earlySingletonObjects 是干什么的啊， earlySingletonObjects 和 singletonObjects（已经实例化的单例）和isSingletonCurrentlyInCreation（在实例化处理中的单例）看着是互斥的， 即仅在其中一个集合中
 				singletonObject = this.earlySingletonObjects.get(beanName);
 				if (singletonObject == null && allowEarlyReference) {
 					ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
@@ -219,7 +223,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					this.suppressedExceptions = new LinkedHashSet<>();
 				}
 				try {
-					singletonObject = singletonFactory.getObject();
+					singletonObject = singletonFactory.getObject(); // lambda 表达式， 一般由子类进行实现
 					newSingleton = true;
 				}
 				catch (IllegalStateException ex) {
@@ -245,6 +249,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					afterSingletonCreation(beanName);
 				}
 				if (newSingleton) {
+					// 添加到已创建的单例中去
 					addSingleton(beanName, singletonObject);
 				}
 			}
@@ -395,6 +400,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * @param dependentBeanName the name of the dependent bean
 	 */
 	public void registerDependentBean(String beanName, String dependentBeanName) {
+		// 为我们要获取的bean 注册他的依赖bean形成一个集合
 		String canonicalName = canonicalName(beanName);
 
 		synchronized (this.dependentBeanMap) {
