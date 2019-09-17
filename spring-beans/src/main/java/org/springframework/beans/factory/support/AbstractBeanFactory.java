@@ -295,7 +295,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 
 			try {
-				// TODO: 19-8-28  RootBeanDefinition ? 根 bean definitioin ?
+				// 刚开始的beanDefinition 都是普通的definition， 从这里转化到 如果这个definition由父类， 则将父类的属性也要merge进来
 				final RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 				checkMergedBeanDefinition(mbd, beanName, args);
 
@@ -304,7 +304,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				String[] dependsOn = mbd.getDependsOn();
 				if (dependsOn != null) {
 					for (String dep : dependsOn) {
-						// 循环依赖异常抛出
+						// 循环依赖异常抛出 如果 A依赖B 此时再检查出来 B 依赖 A 那么就是循环依赖
 						if (isDependent(beanName, dep)) {
 							throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 									"Circular depends-on relationship between '" + beanName + "' and '" + dep + "'");

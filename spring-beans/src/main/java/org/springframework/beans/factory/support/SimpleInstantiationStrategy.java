@@ -106,6 +106,7 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 	public Object instantiate(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner,
 			final Constructor<?> ctor, Object... args) {
 
+		// 没有找到重写的方法，用发射直接实例化对象
 		if (!bd.hasMethodOverrides()) {
 			if (System.getSecurityManager() != null) {
 				// use own privileged to change accessibility (when security is on)
@@ -114,8 +115,10 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 					return null;
 				});
 			}
+			// 反射的方式实例化对象
 			return BeanUtils.instantiateClass(ctor, args);
 		}
+		// 找到了配置的构造器，使用cglib进行对象的实例化
 		else {
 			return instantiateWithMethodInjection(bd, beanName, owner, ctor, args);
 		}

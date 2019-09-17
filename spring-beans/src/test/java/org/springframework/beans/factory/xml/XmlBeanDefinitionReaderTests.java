@@ -98,9 +98,9 @@ public class XmlBeanDefinitionReaderTests {
 	@Test
 	public void withFreshInputStream() {
 		// 持有 两个hashmap的 注册器，一个beanName 和 beanDefinition 一个 别名 和beanName 这个就是狭义上的IOC
-		SimpleBeanDefinitionRegistry registry = new SimpleBeanDefinitionRegistry();
-		Resource resource = new ClassPathResource("test.xml", getClass());
-		new XmlBeanDefinitionReader(registry).loadBeanDefinitions(resource);
+		SimpleBeanDefinitionRegistry registry = new SimpleBeanDefinitionRegistry(); // 这个里面就是一个map容器
+		Resource resource = new ClassPathResource("test.xml", getClass()); // 这个就是制定的xml path 资源
+		new XmlBeanDefinitionReader(registry).loadBeanDefinitions(resource); // 先new 一个reader 这个reader将map容器包括进来， 然后读取目标资源
 		testBeanDefinitions(registry);
 	}
 
