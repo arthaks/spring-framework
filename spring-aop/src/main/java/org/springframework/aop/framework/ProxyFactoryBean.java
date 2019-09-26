@@ -249,6 +249,8 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 	@Override
 	@Nullable
 	public Object getObject() throws BeansException {
+		// aop 入口， aop代理类的生成， 走的是FactoryBean 的形式， 所以 每个具体的FactoryBean 实现的getObject()方法就是aop的入口
+		// 初始化Advisor 链, 通过getBean 将Advisor 实例化并放进来
 		initializeAdvisorChain();
 		if (isSingleton()) {
 			return getSingletonInstance();
@@ -431,6 +433,7 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 	 * are unaffected by such changes.
 	 */
 	private synchronized void initializeAdvisorChain() throws AopConfigException, BeansException {
+		// 初始化过的话 直接返回
 		if (this.advisorChainInitialized) {
 			return;
 		}
@@ -475,6 +478,7 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 						// Avoid unnecessary creation of prototype bean just for advisor chain initialization.
 						advice = new PrototypePlaceholderAdvisor(name);
 					}
+					// 通过 getBean 实例化advisor 并添加进来
 					addAdvisorOnChainCreation(advice, name);
 				}
 			}
